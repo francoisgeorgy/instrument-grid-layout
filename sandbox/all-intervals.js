@@ -1,9 +1,3 @@
-import 'react-app-polyfill/ie11';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import {createCells, setNotes, tuneFourth} from "../src";
-import "./main.css";
-
 
 const NOTE_NAME = [
     "C-1", // 0
@@ -136,54 +130,27 @@ const NOTE_NAME = [
     "G9" // 127
 ];
 
-const ROWS = 8;
-const COLS = 16;
 
-function Grid() {
-
-    const cells = createCells(COLS, ROWS, {note:0});
-
-
-    setNotes(cells, tuneFourth);
-
-    console.log(cells);
-
-    let cellsGrid: JSX.Element[] = [];
-
-    for (let r = ROWS - 1; r >= 0; r--) {
-        for (let c = 0; c < COLS; c++) {
-            // const z = cells[c][r].z;
-            cellsGrid.push(<div key={`${r}.${c}`}>{c}.{r}<br/>{cells[r][c].note} {NOTE_NAME[cells[r][c].note]}</div>);
-        }
-    }
-
-    return <div className="grid">{cellsGrid}</div>;
-
-    /*
-
-    CAN'T DO THAT because CSS grid are row by row, and our cells are col by col.
-
-    return (
-        <>{
-            cells.map(
-                (rowOfCells, i) =>
-                    <>{
-                        rowOfCells.map(
-                            (cell, j) => <div key={`${i}.${j}`}>{i}.{j}<br/>{cell.note}</div>
-                        )
-                    }</>
-            )
-        }</>
-    );
-     */
+function tuneFourth(col, row, col2, row2) {
+    const dr = (row2 - row) * 5;    // tuning in fourth (5 semitones between each rows)
+    const dc = col2 - col;          // 1 semitone between each column
+    return dr + dc;
 }
 
-const App = () => {
-  return (
-    <div>
-        <Grid />
-    </div>
-  );
-};
 
-ReactDOM.render(<App />, document.getElementById('root'));
+
+const FIRST_NOTE = 18;
+
+for (let row = 7; row>=0; row--) {
+    let r = '';
+    for (let col = 0; col<25; col++) {
+        let d = FIRST_NOTE + tuneFourth(0, 0, col, row);
+        //r += `  ${col}.${row} ${d.toString().padStart(2)} ${NOTE_NAME[d].padEnd(4)}`
+        r += `  ${d.toString().padStart(2)} ${NOTE_NAME[d].padEnd(4)}`
+    }
+    console.log(r);
+}
+
+
+
+
